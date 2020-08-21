@@ -124,17 +124,18 @@ function stockValue(file) {
         let categoryProducts = file.filter(product => product.category === categoryName);
 
         categoryProducts.forEach(product => {
-            console.log(product.quantity);
-            console.log(product.price);
+            let quantity = product.quantity;
+            let price = product.price;
             if (categoryValue[categoryName] == undefined) {
                 categoryValue[categoryName] = 0;
-                categoryValue[categoryName] += (product.quantity)*(product.price);
+                categoryValue[categoryName] += price*quantity;
             } else {
-                categoryValue[categoryName] += (product.quantity)*(product.price);
+                categoryValue[categoryName] += price*quantity;
             };
         });
     });
 
-    console.log(`Total value in stock by category:`)
+    console.log(`Total value in stock by category:`);
     console.log(categoryValue);
+
 }
