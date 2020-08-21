@@ -102,8 +102,8 @@ function sortData(file) {
         });
     });
 
-    //console.log(`Product's names ordered by category and id:`);
-    //console.log(sortedNames);
+    console.log(`Product's names ordered by category and id:`);
+    console.log(sortedNames);
 };
 
 //Calculates the total stock value for each category.
