@@ -45,7 +45,7 @@ function correctNames(data) {
     };
 
     return JSON.parse(dataString);
- };
+};
 
 //Function 3 - Corrects the prices
 function correctPrices(data) {
@@ -53,7 +53,7 @@ function correctPrices(data) {
         if (!isNaN(product.price)) product.price = Number(product.price);
     });
     //console.log(data);
-}
+};
 
 //Function 4 - Correct quantities
 function correctQuantities(data) {
@@ -61,7 +61,7 @@ function correctQuantities(data) {
         if (product.quantity == undefined) product.quantity = 0;
     })
     //console.log(data);
-}
+};
 
 //Function 5 - Export the JSON file corrected data.
 function correctData(data) {
@@ -69,8 +69,7 @@ function correctData(data) {
     fs.writeFileSync(fileName, JSON.stringify(data, null, 4));
 
     return fileName
-}
-
+};
 
 //Validation Functions
 //Ordering the product names by category and id.
@@ -126,16 +125,15 @@ function stockValue(file) {
         categoryProducts.forEach(product => {
             let quantity = product.quantity;
             let price = product.price;
-            if (categoryValue[categoryName] == undefined) {
-                categoryValue[categoryName] = 0;
-                categoryValue[categoryName] += price*quantity;
-            } else {
-                categoryValue[categoryName] += price*quantity;
-            };
-        });
+
+            if (categoryValue[categoryName] == undefined) categoryValue[categoryName] = 0;
+       
+            categoryValue[categoryName] += quantity*price;
+        });        
+
+        categoryValue[categoryName] = Number((categoryValue[categoryName]).toFixed(2));
     });
 
     console.log(`Total value in stock by category:`);
     console.log(categoryValue);
-
 }
