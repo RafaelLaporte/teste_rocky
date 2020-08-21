@@ -1,6 +1,8 @@
 const fs = require('fs');
 const file = 'raw.txt'
 
+
+//Executes the code
 let data = dataReader(file);
 data = correctNames(data);
 correctPrices(data);
