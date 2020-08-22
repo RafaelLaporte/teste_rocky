@@ -124,11 +124,15 @@ function stockValue(file) {
 }
 
 //Executes the code
-let data = readFromFile(file);
-fixData(data);
-fixPrices(data);
-fixQuantities(data);
-exportDataToFile(data, 'saida.json');
+function execute() {
+    let data = readFromFile(file);
+    fixData(data);
+    fixPrices(data);
+    fixQuantities(data);
+    exportDataToFile(data, 'saida.json');
+    
+    sortData(data);
+    stockValue(data);
+}
 
-sortData(data);
-stockValue(data);
+execute();
