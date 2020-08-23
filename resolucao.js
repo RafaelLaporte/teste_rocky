@@ -39,6 +39,8 @@ function fixData(data) {
     };
 
     Object.assign(data, JSON.parse(dataString));
+
+    return data
 };
 
 /**
@@ -49,6 +51,8 @@ function fixPrices(data) {
     data.forEach(product => {
         if (!isNaN(product.price)) product.price = Number(product.price);
     });
+
+    return data
 };
 
 /**
@@ -59,6 +63,8 @@ function fixQuantities(data) {
     data.forEach(product => {
         product.quantity = !product.quantity ? 0 : product.quantity
     });
+
+    return data
 };
 
 /**
@@ -81,6 +87,7 @@ function sortData(data) {
     console.log(`Product's names ordered by category and id: \n`);
 
     let sortedCategory = [];
+    let sortedNames = [];
 
     //Generates the list containing all the categories.
     data.forEach(product => {
@@ -91,9 +98,8 @@ function sortData(data) {
     //Organize the sortedCategory list in alphabetical order.
     sortedCategory = sortedCategory.sort();
 
-
+    //Filters the products by sortedCategory elements, find and sorts it's ids and finally print the products names.
     sortedCategory.forEach(categoryName => {
-
         let sortedId = [];
         let productsByCategory = data.filter(product => product.category === categoryName);
 
@@ -101,13 +107,17 @@ function sortData(data) {
             sortedId.push(product.id);
         });
 
+        //Sorting the ids
         sortedId.sort((a,b) => a - b);
 
         sortedId.forEach(idNumber => {
             let sortedProduct = productsByCategory.find(product => product.id === idNumber);
+            sortedNames.push(sortedProduct.name);
             console.log(sortedProduct.name);
         });
     });
+
+    return sortedNames
 };
 
 /**
@@ -142,6 +152,8 @@ function stockValue(data) {
 
     console.log(`\n Total value in stock by category: \n`);
     console.log(JSON.stringify(categoryValue, null, 4));
+
+    return categoryValue
 }
 
 /**
@@ -159,3 +171,9 @@ function execute() {
 }
 
 execute();
+
+exports.fixData = fixData;
+exports.fixPrices = fixPrices;
+exports.fixQuantities = fixQuantities;
+exports.sortData = sortData;
+exports.stockValue = stockValue;
