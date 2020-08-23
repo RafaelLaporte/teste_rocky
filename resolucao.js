@@ -1,7 +1,10 @@
 const fs = require('fs');
 const file = 'raw.txt'
 
-//Function 1 - Read file
+/**
+ * Function 1 - Read the file and returns it in JSON format.
+ * @param {String} file Name with extension of the database file. Ex: 'raw.txt'
+ */
 function readFromFile(file) {
     try {
         var data = fs.readFileSync(file, 'utf-8');
@@ -10,9 +13,12 @@ function readFromFile(file) {
     }
 
     return JSON.parse(data);
-};
+};  
 
-//Function 2 - Corrects the wrong caracters 
+/**
+ * Function 2 - Corrects the wrong caracters
+ * @param {Array} data Array containing the JSON data.
+ */
 function fixData(data) {
 
     let dataString = JSON.stringify(data);
@@ -23,80 +29,97 @@ function fixData(data) {
         "ø" : 'o',
         "ß" : 'b'
     };
- 
-    for (char of dataString) {
-        let keyList = Object.keys(charModel);
- 
-        if (keyList.includes(char)) {
-            let regex = new RegExp(char, "g");
-            dataString = dataString.replace(regex, charModel[char]);
+
+    let keyList = Object.keys(charModel);
+
+    for (char of dataString) {        
+         if (keyList.includes(char)) {
+            dataString = dataString.replace(char, charModel[char]);
         };
     };
 
     Object.assign(data, JSON.parse(dataString));
 };
 
-//Function 3 - Fix the prices
+/**
+ * Function 3 - Fix the prices
+ * @param {Array} data Array containing the JSON data.
+ */
 function fixPrices(data) {
     data.forEach(product => {
         if (!isNaN(product.price)) product.price = Number(product.price);
     });
 };
 
-//Function 4 - Fix the quantities
+/**
+ * Function 4 - Fix the quantities
+ * @param {Array} data Array containing the JSON data 
+ */
 function fixQuantities(data) {
     data.forEach(product => {
         product.quantity = !product.quantity ? 0 : product.quantity
     });
 };
 
-//Function 5 - Export the JSON file corrected data.
+/**
+ * Function 5 - Export the JSON file corrected data.
+ * @param {Array} data Array containing the JSON data 
+ * @param {String} fileName The name with extension of the output file. Ex: 'output.json'
+ */
 function exportDataToFile(data, fileName) {
     fs.writeFileSync(fileName, JSON.stringify(data, null, 4));
 };
 
 //Validation Functions
-//Ordering the product names by category and id.
-function sortData(file) {
+
+/**
+ * Ordering the product names by category and id.
+ * @param {Array} data Array containing the JSON data
+ */
+function sortData(data) {
+
+    console.log(`Product's names ordered by category and id: \n`);
 
     let sortedCategory = [];
-    let sortedNames = [];
 
-    file.forEach(product => {
+    //Generates the list containing all the categories.
+    data.forEach(product => {
         let categoryName = product.category
         if (!sortedCategory.includes(categoryName)) sortedCategory.push(categoryName);
     });
 
+    //Organize the sortedCategory list in alphabetical order.
     sortedCategory = sortedCategory.sort();
+
 
     sortedCategory.forEach(categoryName => {
 
         let sortedId = [];
-        let categoryList = file.filter(product => product.category === categoryName);
+        let productsByCategory = data.filter(product => product.category === categoryName);
 
-        categoryList.forEach(product => {
+        productsByCategory.forEach(product => {
             sortedId.push(product.id);
         });
 
         sortedId.sort((a,b) => a - b);
 
         sortedId.forEach(idNumber => {
-            let sortedProduct = categoryList.find(product => product.id === idNumber);
-            sortedNames.push(sortedProduct.name);
+            let sortedProduct = productsByCategory.find(product => product.id === idNumber);
+            console.log(sortedProduct.name);
         });
     });
-
-    console.log(`Product's names ordered by category and id:`);
-    console.log(sortedNames);
 };
 
-//Calculates the total stock value for each category.
-function stockValue(file) {
+/**
+ * Calculates the total stock value for each category.
+ * @param {*} data Array containing the JSON data
+ */
+function stockValue(data) {
 
     let sortedCategory = [];
     let categoryValue = {};
 
-    file.forEach(product => {
+    data.forEach(product => {
         let categoryName = product.category
         if (!sortedCategory.includes(categoryName)) sortedCategory.push(categoryName);
     });
@@ -104,26 +127,26 @@ function stockValue(file) {
     sortedCategory = sortedCategory.sort();
 
     sortedCategory.forEach(categoryName => {
-        let categoryProducts = file.filter(product => product.category === categoryName);
+        let productsByCategory = data.filter(product => product.category === categoryName);
 
-        categoryProducts.forEach(product => {
+        productsByCategory.forEach(product => {
             let quantity = product.quantity;
             let price = product.price;
 
-            //if (categoryValue[categoryName] == undefined) categoryValue[categoryName] = 0;
-            categoryValue[categoryName] = !categoryValue[categoryName] ? 0 : categoryValue[categoryName]
-       
+            categoryValue[categoryName] = !categoryValue[categoryName] ? 0 : categoryValue[categoryName]      
             categoryValue[categoryName] += quantity*price;
         });        
 
         categoryValue[categoryName] = Number((categoryValue[categoryName]).toFixed(2));
     });
 
-    console.log(`Total value in stock by category:`);
-    console.log(categoryValue);
+    console.log(`\n Total value in stock by category: \n`);
+    console.log(JSON.stringify(categoryValue, null, 4));
 }
 
-//Executes the code
+/**
+ * Executes the code, reading the file and running all fix and validation functions.
+ */
 function execute() {
     let data = readFromFile(file);
     fixData(data);
