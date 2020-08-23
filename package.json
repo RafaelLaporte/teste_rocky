@@ -1,12 +1,12 @@
 {
-  "name": "rafael_projetoRocky",
+  "name": "projeto_rocky",
   "version": "1.0.0",
   "description": "",
   "main": "resolucao.js",
   "scripts": {
     "test": "jest"
   },
-  "author": "",
+  "author": "Rafael Sobrinho Laporte",
   "license": "ISC",
   "devDependencies": {
     "jest": "^26.4.2"
